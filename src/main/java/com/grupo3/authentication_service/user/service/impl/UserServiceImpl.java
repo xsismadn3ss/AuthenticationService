@@ -7,6 +7,8 @@ import com.grupo3.authentication_service.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
@@ -30,10 +32,12 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDto findByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
 
-        return getUserDto(user);
+        return getUserDto(user.get());
     }
 
     @Override
