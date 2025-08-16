@@ -1,11 +1,11 @@
 spring:
   application:
     name: authentication_service
-    url: "authentication"
+    url: authentication
 
   datasource:
     url: ${DB_URL}
-    username: ${DB_USERNAME}
+    username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.jdbc.Driver
 
