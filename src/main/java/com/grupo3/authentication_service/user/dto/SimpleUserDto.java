@@ -7,16 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class SimpleUserDto {
     private Long id;
     private String username;
     private String name;
     private String lastname;
     private String email;
     private String dui;
-    private String password;
-
-    public SimpleUserDto toSimpleUserDto() {
-        return new SimpleUserDto(id, username, name, lastname, email, dui);
-    }
 }
