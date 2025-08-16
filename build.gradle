@@ -43,6 +43,14 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
+    // Testing (unit/integration)
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'    // JUnit 5, Mockito, AssertJ, etc.
+    testImplementation 'org.springframework.security:spring-security-test'    // Helpers de Spring Security
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'              // Requerido por Gradle para JUnit Platform
+    testImplementation 'org.mockito:mockito-junit-jupiter'                    // Extensión Mockito + JUnit 5
+    testImplementation 'org.assertj:assertj-core'                             // Aserciones fluidas
+    testImplementation 'com.h2database:h2'                                    // BD en memoria para tests
+
 }
 
 tasks.named('test') {
