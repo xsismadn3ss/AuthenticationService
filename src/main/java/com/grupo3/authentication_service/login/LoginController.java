@@ -7,6 +7,8 @@ import com.grupo3.authentication_service.login.dto.LoginUserDto;
 import com.grupo3.authentication_service.token.service.ITokenService;
 import com.grupo3.authentication_service.user.dto.UserDto;
 import com.grupo3.authentication_service.user.service.IUserService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -52,16 +54,18 @@ public class LoginController {
             cookie.setSecure(true);
             response.addCookie(cookie);
 
-            MessageDto message = new MessageDto("Has iniciado sesión correctamente");
+             HashMap<String, Object> message = new HashMap<>();
+             message.put("message", "Has iniciado sesión correctamente");
+             message.put("token", token);
             return new ResponseEntity<>(message, HttpStatus.OK);
         }catch (Exception e){
-            ErrorDto errorDto = new ErrorDto("No se pudo iniciar sesión", String.valueOf(e.getCause()));
+            ErrorDto errorDto = new ErrorDto("No se pudo iniciar sesión", String.valueOf(e));
             return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("logout")
-    public ResponseEntity<?> logout(HttpServletResponse response, @CookieValue("token") String token){
+    public ResponseEntity<MessageDto> logout(HttpServletResponse response, @CookieValue(value = "token", required = false) String token){
         MessageDto messageDto = new MessageDto();
 
         if(token == null || token.isEmpty()){
@@ -78,8 +82,10 @@ public class LoginController {
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
     }
 
-    @PostMapping("validate")
-    public ResponseEntity<?> validate(@CookieValue("token") String token){
+    @GetMapping("validate")
+    public ResponseEntity<?> validate(
+            @Parameter(description = "Token de sesión", in = ParameterIn.COOKIE)
+            @CookieValue(value = "token", required = false) String token){
         try{
             if (token == null || token.isEmpty()) {
                 MessageDto messageDto = new MessageDto("No has iniciado sesión");
@@ -87,8 +93,7 @@ public class LoginController {
             }
             String username = this.tokenService.extractUsername(token);
             UserDto userDto = this.userService.findByUsername(username);
-            userDto.setPassword(null);
-            return new ResponseEntity<>(userDto, HttpStatus.OK);
+            return new ResponseEntity<>(userDto.toSimpleUserDto(), HttpStatus.OK);
         } catch (Exception e) {
             ErrorDto errorDto = new ErrorDto("No se pudo validar", String.valueOf(e.getCause()));
             return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
