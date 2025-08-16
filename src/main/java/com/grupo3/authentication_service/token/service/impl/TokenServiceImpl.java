@@ -43,7 +43,7 @@ public class TokenServiceImpl implements ITokenService {
 
     @Override
     public String generateToken(UserDetails userDetails) {
-        return generateToken(Map.of(), userDetails);
+        return generateToken(Map.of(), userDetails.getUsername());
     }
 
     @Override
