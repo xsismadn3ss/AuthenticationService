@@ -1,10 +1,11 @@
 package com.grupo3.authentication_service.login;
 
-import com.grupo3.authentication_service.common.dto.ErrorDto;
 import com.grupo3.authentication_service.common.dto.MessageDto;
 import com.grupo3.authentication_service.encrypt.service.IEncryptService;
+import com.grupo3.authentication_service.login.dto.LoginResponseDto;
 import com.grupo3.authentication_service.login.dto.LoginUserDto;
 import com.grupo3.authentication_service.token.service.ITokenService;
+import com.grupo3.authentication_service.user.dto.SimpleUserDto;
 import com.grupo3.authentication_service.user.dto.UserDto;
 import com.grupo3.authentication_service.user.service.IUserService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 
@@ -24,48 +26,47 @@ public class LoginController {
     private final IEncryptService encryptService;
     private final ITokenService tokenService;
 
-    public LoginController(IUserService userService, IEncryptService encryptService, ITokenService tokenService) {
+    public LoginController(IUserService userService,
+                           IEncryptService encryptService,
+                           ITokenService tokenService) {
         this.userService = userService;
         this.encryptService = encryptService;
         this.tokenService = tokenService;
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody LoginUserDto loginUserDto, HttpServletResponse response) {
-        try{
-            // buscar usuario
-            UserDto userDto = this.userService.findByUsername(loginUserDto.getUsername());
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginUserDto loginUserDto, HttpServletResponse response) {
+        // buscar usuario
+        UserDto userDto = this.userService.findByUsername(loginUserDto.getUsername());
 
-            // validar contraseña
-            if(!this.encryptService.compare(loginUserDto.getPassword(), userDto.getPassword())){
-                ErrorDto errorDto = new ErrorDto("No se pudo iniciar sesión", "Contraseña incorrecta");
-                return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
-            }
-
-            HashMap<String, Object> payload = new HashMap<>();
-            payload.put("username", userDto.getUsername());
-            payload.put("id", userDto.getId());
-            String token = this.tokenService.generateToken(payload, loginUserDto.getUsername());
-
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(60 * 60 * 24);
-            cookie.setPath("/");
-            cookie.setSecure(true);
-            response.addCookie(cookie);
-
-             HashMap<String, Object> message = new HashMap<>();
-             message.put("message", "Has iniciado sesión correctamente");
-             message.put("token", token);
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        }catch (Exception e){
-            ErrorDto errorDto = new ErrorDto("No se pudo iniciar sesión", String.valueOf(e));
-            return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+        // validar contraseña
+        if(!this.encryptService.compare(loginUserDto.getPassword(), userDto.getPassword())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Contraseña invalida");
         }
+
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("username", userDto.getUsername());
+        payload.put("id", userDto.getId());
+        String token = this.tokenService.generateToken(payload, loginUserDto.getUsername());
+
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(60 * 60 * 24);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        response.addCookie(cookie);
+
+        LoginResponseDto message = new LoginResponseDto(
+                "Has iniciado sesión correctamente",
+                token,
+                userDto.getUsername());
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @PostMapping("logout")
-    public ResponseEntity<MessageDto> logout(HttpServletResponse response, @CookieValue(value = "token", required = false) String token){
+    public ResponseEntity<MessageDto> logout(
+            HttpServletResponse response,
+            @CookieValue(value = "token", required = false) String token){
         MessageDto messageDto = new MessageDto();
 
         if(token == null || token.isEmpty()){
@@ -82,22 +83,33 @@ public class LoginController {
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
     }
 
-    @GetMapping("validate")
-    public ResponseEntity<?> validate(
-            @Parameter(description = "Token de sesión", in = ParameterIn.COOKIE)
-            @CookieValue(value = "token", required = false) String token){
-        try{
-            if (token == null || token.isEmpty()) {
-                MessageDto messageDto = new MessageDto("No has iniciado sesión");
-                return new ResponseEntity<>(messageDto, HttpStatus.UNAUTHORIZED);
-            }
-            String username = this.tokenService.extractUsername(token);
-            UserDto userDto = this.userService.findByUsername(username);
-            return new ResponseEntity<>(userDto.toSimpleUserDto(), HttpStatus.OK);
-        } catch (Exception e) {
-            ErrorDto errorDto = new ErrorDto("No se pudo validar", String.valueOf(e.getCause()));
-            return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    @GetMapping("validate/cookie")
+    public ResponseEntity<SimpleUserDto> validateTokenCookie(
+            @Parameter(description = "Token de acceso", in = ParameterIn.COOKIE)
+            @CookieValue(value = "token", required = false) String token
+    ) {
+        if(token == null || token.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token invalido");
         }
+        this.tokenService.validateToken(token);
+        String username = this.tokenService.extractUsername(token);
+        SimpleUserDto simpleUser = this.userService.findByUsername(username).toSimpleUserDto();
+        return new ResponseEntity<>(simpleUser, HttpStatus.OK);
     }
 
+    @GetMapping("validate/header")
+    public ResponseEntity<SimpleUserDto> validateTokenHeader(
+            @Parameter(description = "Token de acceso", in = ParameterIn.HEADER)
+            @RequestHeader(value = "Authorization", required = false) String authorization)
+    {
+        if(authorization == null || authorization.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token invalido");
+        }else if(!authorization.startsWith("Bearer ")){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token invalido, debe empezar por Bearer");
+        }
+        this.tokenService.validateToken(authorization.replace("Bearer ", ""));
+        String username = this.tokenService.extractUsername(authorization.replace("Bearer ", ""));
+        SimpleUserDto simpleUserDto = this.userService.findByUsername(username).toSimpleUserDto();
+        return new ResponseEntity<>(simpleUserDto, HttpStatus.OK);
+    }
 }
