@@ -7,8 +7,10 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
@@ -66,7 +68,13 @@ public class TokenServiceImpl implements ITokenService {
     @Override
     public Boolean validateToken(String token) {
         String username = extractUsername(token);
-        return username != null && !isExpired(token);
+        if(username == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token invalido");
+        }
+        if(isExpired(token)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expirado");
+        }
+        return true;
     }
 
     @Override
