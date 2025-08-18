@@ -5,7 +5,9 @@ import com.grupo3.authentication_service.user.entity.User;
 import com.grupo3.authentication_service.user.repository.UserRepository;
 import com.grupo3.authentication_service.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -34,7 +36,7 @@ public class UserServiceImpl implements IUserService {
     public UserDto findByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
-            throw new RuntimeException("User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
         return getUserDto(user.get());
