@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("authentication/")
+@RequestMapping("/authentication/")
 public class LoginController {
     private final IUserService userService;
     private final IEncryptService encryptService;
