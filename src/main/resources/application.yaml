@@ -1,7 +1,6 @@
 spring:
   application:
     name: authentication_service
-    url: api/auth
 
   datasource:
     url: ${DB_URL}
