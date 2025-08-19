@@ -58,11 +58,14 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         envs: DB_URL,DB_USER,DB_PASSWORD,JWT_SECRET_KEY,JWT_EXPIRATION
         script: |
-          echo "Usando DB_URL=$DB_URL"
-          export DB_URL=$DB_URL
-          export DB_USER=$DB_USER
-          export DB_PASSWORD=$DB_PASSWORD
-          export JWT_SECRET_KEY=$JWT_SECRET_KEY
-          export JWT_EXPIRATION=$JWT_EXPIRATION
+          cat <<EOF > /opt/spring-auth-api/.env
+          DB_URL=$DB_URL
+          DB_USER=$DB_USER
+          DB_PASSWORD=$DB_PASSWORD
+          JWT_SECRET_KEY=$JWT_SECRET_KEY
+          JWT_EXPIRATION=$JWT_EXPIRATION
+          EOF
+          chmod 600 /opt/spring-auth-api/.env
+          sudo systemctl daemon-reload
           sudo systemctl restart spring-auth-api.service
 
