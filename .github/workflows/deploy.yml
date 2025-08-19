@@ -18,14 +18,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up JDK
+    - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
+        distribution: 'temurin'  # Puedes usar 'zulu' o 'adopt' si prefieres otra distribución
         java-version: '21'
-        distribution: 'temurin'
 
+    - name: Check Java version
+      run: java -version
+  
     - name: Build JAR
       run: ./gradlew build # o mvn package si usas Maven
+
+    - name: Check Java version
+      run: java -version
 
     - name: Rename JAR
       run: |
