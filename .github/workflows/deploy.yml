@@ -3,7 +3,7 @@ name: Deploy Spring Boot API
 env:
   DB_URL: ${{ secrets.DB_URL }}
   DB_USER: ${{ secrets.DB_USER }}
-  DB_PASS: ${{ secrets.DB_PASSWORD }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
 on:
   push:
@@ -58,6 +58,6 @@ jobs:
           echo "Usando DB_URL=$DB_URL"
           export DB_URL=$DB_URL
           export DB_USER=$DB_USER
-          export DB_PASS=$DB_PASSWORD
+          export DB_PASSWORD=$DB_PASSWORD
           sudo systemctl restart spring-auth-api.service
 
