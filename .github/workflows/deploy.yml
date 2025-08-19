@@ -26,12 +26,12 @@ jobs:
 
     - name: Check Java version
       run: java -version
+
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
   
     - name: Build JAR
       run: ./gradlew build # o mvn package si usas Maven
-
-    - name: Check Java version
-      run: java -version
 
     - name: Rename JAR
       run: |
