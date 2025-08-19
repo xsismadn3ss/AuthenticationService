@@ -38,7 +38,8 @@ jobs:
     - name: Rename JAR
       run: |
         mkdir -p build/libs/final
-        cp build/libs/*.jar build/libs/final/app.jar
+        JAR_FILE=$(ls build/libs/*.jar | grep -v plain | head -n 1)
+        cp "$JAR_FILE" build/libs/final/app.jar
 
     - name: Copy JAR to VPS
       uses: appleboy/scp-action@v0.1.4
