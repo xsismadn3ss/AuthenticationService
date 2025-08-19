@@ -66,7 +66,7 @@ public class TokenServiceImpl implements ITokenService {
     }
 
     @Override
-    public Boolean validateToken(String token) {
+    public void validateToken(String token) {
         String username = extractUsername(token);
         if(username == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token invalido");
@@ -74,7 +74,6 @@ public class TokenServiceImpl implements ITokenService {
         if(isExpired(token)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expirado");
         }
-        return true;
     }
 
     @Override

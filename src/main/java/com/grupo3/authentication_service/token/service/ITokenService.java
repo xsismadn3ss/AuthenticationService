@@ -8,6 +8,6 @@ public interface ITokenService {
     String generateToken(UserDetails userDetails);
     String generateToken(Map<String, Object> claims, String username);
     String extractUsername(String token);
-    Boolean validateToken(String token);
+    void validateToken(String token);
     Boolean isExpired(String token);
 }
