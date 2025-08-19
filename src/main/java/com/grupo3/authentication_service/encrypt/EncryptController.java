@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("${spring.application.url}/encryption/")
+@RequestMapping("encryption/")
 public class EncryptController {
 
     private final IEncryptService encryptService;
