@@ -6,7 +6,7 @@ env:
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
-  CORS_ALLOWED_ORIGINX: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+  CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
 
 on:
   push:
@@ -65,7 +65,7 @@ jobs:
           DB_PASSWORD=$DB_PASSWORD
           JWT_SECRET_KEY=$JWT_SECRET_KEY
           JWT_EXPIRATION=$JWT_EXPIRATION
-          CORS_ALLOWED_ORIGIN=$CORS_ALLOWED_ORIGINS
+          CORS_ALLOWED_ORIGINS=$CORS_ALLOWED_ORIGINS
           EOF
           chmod 600 /opt/spring-auth-api/.env
           sudo systemctl daemon-reload
