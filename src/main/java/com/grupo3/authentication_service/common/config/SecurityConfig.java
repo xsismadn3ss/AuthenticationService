@@ -1,13 +1,10 @@
 package com.grupo3.authentication_service.common.config;
 
-import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,41 +12,48 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
+@Slf4j
 @Configuration
 public class SecurityConfig {
+
+    @Value("${app.cors.allowed-origins:}")
+    private String allowedOriginsProp;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(
-            @Value("${app.cors.allowed-origins:*}") String allowedOriginsProp
-    ) {
+    public CorsConfigurationSource corsConfigurationSource() {
+        String prop = allowedOriginsProp == null ? "" : allowedOriginsProp;
+
+        // Soportar valores separados por coma o espacios; limpiar comillas y slashes finales
+        List<String> origins = Stream.of(prop.split("[,\\s]+"))
+                .map(String::trim)
+                .map(s -> s.replaceAll("^\"|\"$", "")) // quita comillas al inicio/fin si hubiera
+                .filter(s -> !s.isBlank())
+                .map(s -> s.endsWith("/") ? s.substring(0, s.length() - 1) : s) // sin slash final
+                .distinct()
+                .toList();
+
         CorsConfiguration config = new CorsConfiguration();
 
-        // Parse allowed origins from property (comma-separated). Default to wildcard if not provided.
-        List<String> origins;
-        if (allowedOriginsProp == null || allowedOriginsProp.isBlank() || "*".equals(allowedOriginsProp.trim())) {
-            // When using wildcard, use origin pattern and disable credentials to satisfy CORS spec with "*".
-            config.addAllowedOriginPattern("*");
-            config.setAllowCredentials(false);
+        boolean hasPattern = origins.stream().anyMatch(o -> o.contains("*") || o.contains("?"));
+        if (hasPattern) {
+            config.setAllowedOriginPatterns(origins);
         } else {
-            origins = Arrays.stream(allowedOriginsProp.split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .toList();
-            origins.forEach(config::addAllowedOrigin);
-            // Allow cookies/authorization headers for specific origins
-            config.setAllowCredentials(true);
+            config.setAllowedOrigins(origins);
         }
 
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        config.addAllowedHeader("*");
-        config.addExposedHeader("Authorization");
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"));
+        config.setAllowCredentials(true);
+        config.setExposedHeaders(List.of("Authorization"));
+        config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
@@ -59,38 +63,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Enable CORS based on CorsConfigurationSource bean
-                .cors(Customizer.withDefaults())
-                // API-friendly defaults
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        // Permit API endpoints; adjust as needed
-                        .requestMatchers(
-                                "/authentication/**",
-                                "/encryption/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
-                        .anyRequest().permitAll()
-                )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"error\":\"Unauthorized\"}");
-                        })
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"error\":\"Forbidden\"}");
-                        })
-                );
-
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/encryption/**", "/authentication/**").permitAll()
+                .anyRequest().permitAll()
+            );
         return http.build();
     }
 }
