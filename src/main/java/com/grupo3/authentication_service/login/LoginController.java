@@ -50,6 +50,7 @@ public class LoginController {
         String token = this.tokenService.generateToken(payload, loginUserDto.getUsername());
 
         Cookie cookie = new Cookie("token", token);
+        cookie.setDomain(loginUserDto.getDomain()); // añadir dominio a la cookie
         cookie.setHttpOnly(true);
         cookie.setMaxAge(60 * 60 * 24);
         cookie.setPath("/");
