@@ -9,7 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EncryptDto {
-    @NotEmpty
-    @NotNull
     private String value;
 }
