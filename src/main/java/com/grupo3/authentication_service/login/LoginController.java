@@ -5,11 +5,8 @@ import com.grupo3.authentication_service.encrypt.service.IEncryptService;
 import com.grupo3.authentication_service.login.dto.LoginResponseDto;
 import com.grupo3.authentication_service.login.dto.LoginUserDto;
 import com.grupo3.authentication_service.token.service.ITokenService;
-import com.grupo3.authentication_service.user.dto.SimpleUserDto;
 import com.grupo3.authentication_service.user.dto.UserDto;
 import com.grupo3.authentication_service.user.service.IUserService;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -82,35 +79,5 @@ public class LoginController {
         response.addCookie(cookie);
         messageDto.setMessage("Has cerrado sesión correctamente");
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
-    }
-
-    @GetMapping("validate/cookie")
-    public ResponseEntity<SimpleUserDto> validateTokenCookie(
-            @Parameter(description = "Token de acceso", in = ParameterIn.COOKIE)
-            @CookieValue(value = "token", required = false) String token
-    ) {
-        if(token == null || token.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token invalido");
-        }
-        this.tokenService.validateToken(token);
-        String username = this.tokenService.extractUsername(token);
-        SimpleUserDto simpleUser = this.userService.findByUsername(username).toSimpleUserDto();
-        return new ResponseEntity<>(simpleUser, HttpStatus.OK);
-    }
-
-    @GetMapping("validate/header")
-    public ResponseEntity<SimpleUserDto> validateTokenHeader(
-            @Parameter(description = "Token de acceso", in = ParameterIn.HEADER)
-            @RequestHeader(value = "Authorization", required = false) String authorization)
-    {
-        if(authorization == null || authorization.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token invalido");
-        }else if(!authorization.startsWith("Bearer ")){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token invalido, debe empezar por Bearer");
-        }
-        this.tokenService.validateToken(authorization.replace("Bearer ", ""));
-        String username = this.tokenService.extractUsername(authorization.replace("Bearer ", ""));
-        SimpleUserDto simpleUserDto = this.userService.findByUsername(username).toSimpleUserDto();
-        return new ResponseEntity<>(simpleUserDto, HttpStatus.OK);
     }
 }
