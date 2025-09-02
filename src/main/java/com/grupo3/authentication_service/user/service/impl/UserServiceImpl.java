@@ -24,10 +24,9 @@ public class UserServiceImpl implements IUserService {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
-        userDto.setName(user.getName());
+        userDto.setFirstname(user.getName());
         userDto.setLastname(user.getLastname());
         userDto.setEmail(user.getEmail());
-        userDto.setDui(user.getDui());
         userDto.setPassword(user.getPassword());
         return userDto;
     }
