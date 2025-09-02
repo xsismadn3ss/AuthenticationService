@@ -10,13 +10,12 @@ import lombok.NoArgsConstructor;
 public class UserDto {
     private Long id;
     private String username;
-    private String name;
+    private String firstname;
     private String lastname;
     private String email;
-    private String dui;
     private String password;
 
     public SimpleUserDto toSimpleUserDto() {
-        return new SimpleUserDto(id, username, name, lastname, email, dui);
+        return new SimpleUserDto(id, username, firstname, lastname, email);
     }
 }
