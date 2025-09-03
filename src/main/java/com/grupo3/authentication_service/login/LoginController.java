@@ -1,6 +1,6 @@
 package com.grupo3.authentication_service.login;
 
-import com.grupo3.authentication_service.common.dto.MessageDto;
+import shareddtos.usersmodule.auth.MessageDto;
 import com.grupo3.authentication_service.encrypt.service.IEncryptService;
 import com.grupo3.authentication_service.login.dto.LoginResponseDto;
 import com.grupo3.authentication_service.login.dto.LoginUserDto;

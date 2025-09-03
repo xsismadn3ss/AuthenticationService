@@ -1,6 +1,6 @@
 package com.grupo3.authentication_service.encrypt;
 
-import com.grupo3.authentication_service.common.dto.MessageDto;
+import shareddtos.usersmodule.auth.MessageDto;
 import shareddtos.usersmodule.auth.EncryptDto;
 import com.grupo3.authentication_service.encrypt.service.IEncryptService;
 import org.springframework.http.HttpStatus;
