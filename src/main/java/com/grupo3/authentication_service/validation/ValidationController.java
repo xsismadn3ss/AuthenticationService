@@ -1,7 +1,7 @@
 package com.grupo3.authentication_service.validation;
 
 import com.grupo3.authentication_service.token.service.ITokenService;
-import com.grupo3.authentication_service.user.dto.SimpleUserDto;
+import shareddtos.usersmodule.auth.SimpleUserDto;
 import com.grupo3.authentication_service.user.service.IUserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

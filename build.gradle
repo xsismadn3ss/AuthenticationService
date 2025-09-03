@@ -21,6 +21,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -54,6 +55,9 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter'                    // Extensión Mockito + JUnit 5
     testImplementation 'org.assertj:assertj-core'                             // Aserciones fluidas
     testImplementation 'com.h2database:h2'                                    // BD en memoria para tests
+
+    // shared DTOs
+    implementation 'com.github.xsismadn3ss:shared-dtos:v1.0.161'
 
 }
 
