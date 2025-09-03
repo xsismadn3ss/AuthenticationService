@@ -1,6 +1,5 @@
 package com.grupo3.authentication_service.user.service.impl;
 
-import com.grupo3.authentication_service.user.dto.UserDto;
 import com.grupo3.authentication_service.user.entity.User;
 import com.grupo3.authentication_service.user.repository.UserRepository;
 import com.grupo3.authentication_service.user.service.IUserService;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import shareddtos.usersmodule.auth.UserDto;
 
 import java.util.Optional;
 
@@ -24,8 +24,8 @@ public class UserServiceImpl implements IUserService {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
-        userDto.setFirstname(user.getName());
-        userDto.setLastname(user.getLastname());
+        userDto.setFirstName(user.getName());
+        userDto.setLastName(user.getLastname());
         userDto.setEmail(user.getEmail());
         userDto.setPassword(user.getPassword());
         return userDto;

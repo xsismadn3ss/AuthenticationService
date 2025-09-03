@@ -1,6 +1,6 @@
 package com.grupo3.authentication_service.user.service;
 
-import com.grupo3.authentication_service.user.dto.UserDto;
+import shareddtos.usersmodule.auth.UserDto;
 
 public interface IUserService {
     UserDto findByUsername(String username);
