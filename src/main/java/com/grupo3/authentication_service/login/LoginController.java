@@ -5,7 +5,7 @@ import com.grupo3.authentication_service.encrypt.service.IEncryptService;
 import com.grupo3.authentication_service.login.dto.LoginResponseDto;
 import com.grupo3.authentication_service.login.dto.LoginUserDto;
 import com.grupo3.authentication_service.token.service.ITokenService;
-import com.grupo3.authentication_service.user.dto.UserDto;
+import shareddtos.usersmodule.auth.UserDto;
 import com.grupo3.authentication_service.user.service.IUserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
