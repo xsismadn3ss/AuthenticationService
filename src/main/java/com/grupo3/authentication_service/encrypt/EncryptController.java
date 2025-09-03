@@ -1,9 +1,8 @@
 package com.grupo3.authentication_service.encrypt;
 
 import com.grupo3.authentication_service.common.dto.MessageDto;
-import com.grupo3.authentication_service.encrypt.Dto.EncryptDto;
+import shareddtos.usersmodule.auth.EncryptDto;
 import com.grupo3.authentication_service.encrypt.service.IEncryptService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
