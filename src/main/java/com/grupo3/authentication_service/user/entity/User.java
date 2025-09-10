@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "users", indexes = {
         @Index(name = "username_index", columnList = "username", unique = true),
-        @Index(name = "email_index", columnList = "email", unique = true),
-        @Index(name = "dui_index", columnList = "dui", unique = true),
+        @Index(name = "email_index", columnList = "email", unique = true)
 })
 public class User {
     @Id
@@ -30,9 +29,6 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
-
-    @Column(nullable = false, unique = true)
-    private String dui;
 
     @Column(nullable = false)
     private String password;
