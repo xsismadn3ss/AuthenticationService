@@ -1,5 +1,6 @@
 package com.grupo3.authentication_service.login;
 
+import jakarta.validation.Valid;
 import shareddtos.usersmodule.auth.MessageDto;
 import com.grupo3.authentication_service.encrypt.service.IEncryptService;
 import com.grupo3.authentication_service.login.dto.LoginResponseDto;
@@ -17,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/authentication/")
+@RequestMapping("/authentication")
 public class LoginController {
     private final IUserService userService;
     private final IEncryptService encryptService;
@@ -31,8 +32,10 @@ public class LoginController {
         this.tokenService = tokenService;
     }
 
-    @PostMapping("login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginUserDto loginUserDto, HttpServletResponse response) {
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(
+            @Valid @RequestBody LoginUserDto loginUserDto,
+            HttpServletResponse response) {
         // buscar usuario
         UserDto userDto = this.userService.findByUsername(loginUserDto.getUsername());
 
@@ -61,7 +64,7 @@ public class LoginController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @PostMapping("logout")
+    @PostMapping("/logout")
     public ResponseEntity<MessageDto> logout(
             HttpServletResponse response,
             @CookieValue(value = "token", required = false) String token){
