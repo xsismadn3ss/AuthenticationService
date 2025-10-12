@@ -54,7 +54,7 @@ jobs:
   
             echo "Levantando contenedor..."
             docker run -d --name "${CONTAINER_NAME}" \
-            -p "${APP_PORT}:${APP_PORT}" \
+            -p "${APP_PORT}":"${APP_PORT}" \
             -e PORT="${APP_PORT}" \
             -e JWT_SECRET="${JWT_SECRET}" \
             -e DB_URL="${DB_URL}" \
