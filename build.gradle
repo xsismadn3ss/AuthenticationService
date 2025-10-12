@@ -57,7 +57,7 @@ dependencies {
     testImplementation 'com.h2database:h2'                                    // BD en memoria para tests
 
     // shared DTOs
-    implementation 'com.github.xsismadn3ss:shared-dtos:v1.0.17'
+    implementation 'com.github.xsismadn3ss:shared-dtos:v1.0.21'
 }
 
 tasks.named('test') {
