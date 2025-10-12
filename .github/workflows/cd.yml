@@ -26,6 +26,7 @@ env:
   JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
   SWAGGER_ENABLED: ${{ secrets.SWAGGER_ENABLED }}
   APP_PORT: ${{ secrets.PORT }}
+  CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
 
 jobs:
   deploy:
@@ -39,7 +40,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: '22'
-          envs: DB_URL,DB_USER,DB_PASSWORD,JWT_SECRET_KEY,JWT_EXPIRATION,SWAGGER_ENABLED,APP_PORT,REGISTRY,REGISTRY_USERNAME,REGISTRY_TOKEN,CONTAINER_NAME,IMAGE_NAME,IMAGE_TAG
+          envs: DB_URL,DB_USER,DB_PASSWORD,JWT_SECRET_KEY,JWT_EXPIRATION,SWAGGER_ENABLED,APP_PORT,REGISTRY,REGISTRY_USERNAME,REGISTRY_TOKEN,CONTAINER_NAME,IMAGE_NAME,IMAGE_TAG,CORS_ALLOWED_ORIGINS
           script: |
             IMAGE="${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
 
@@ -62,6 +63,7 @@ jobs:
               -e DB_PASSWORD="${DB_PASSWORD}" \
               -e JWT_EXPIRATION="${JWT_EXPIRATION}" \
               -e SWAGGER_ENABLED="${SWAGGER_ENABLED}" \
+              -e CORS_ALLOWED_ORIGINS="${CORS_ALLOWED_ORIGINS}"
               --restart unless-stopped \
               "${IMAGE}"
   
