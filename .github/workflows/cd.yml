@@ -1,0 +1,67 @@
+name: Deploy Spring Boot API
+on:
+  workflow_run:
+    workflows:
+      - Build and Push Image (CI)
+    types:
+      - completed
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+env:
+  # --- ghcr ---
+  REGISTRY: ghrc.io
+  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_TAG: latest
+  REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+  REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+  CONTAINER_NAME: spring-auth-api
+  # --- docker ---
+  DB_URL: ${{ secrets.DB_URL }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+  JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
+  SWAGGER_ENABLED: ${{ secrets.SWAGGER_ENABLED }}
+  APP_PORT: ${{ secrets.PORT }}
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Desplegar en VPS vía Docker
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERRVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: DB_URL,DB_USER,DB_PASSWORD,JWT_SECRET_KEY,JWT_EXPIRATION,CORS_ALLOWED_ORIGINS,SWAGGER_ENABLED,APP_PORT,REGISTRY,REGISTRY_USERNAME,REGISTRY_TOKEN,CONTAINER_NAME,IMAGE_NAME,IMAGE_TAG
+          script: |
+            IMAGE="${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+
+            echo "Iniciando sesión en el registro ${REGISTRY}..."
+            echo "${REGISTRY_TOKEN}" | docker login "${REGISTRY}" -u "${REGISTRY_USERNAME}" --password-stdin
+
+            echo "Descargando imagen ${IMAGE}..."
+            docker pull "${IMAGE}"
+
+            echo "Deteniendo y removiendo contenedor previo (si existe)..."
+            docker rm -f "${CONTAINER_NAME}" || true
+  
+            echo "Levantando contenedor..."
+            docker run -d --name "${CONTAINER_NAME}" \
+            -p "${APP_PORT}:${APP_PORT}" \
+            -e PORT="${APP_PORT}" \
+            -e JWT_SECRET="${JWT_SECRET}" \
+            -e DB_URL="${DB_URL}" \
+            -e DB_USER="${DB_USER}" \
+            -e DB_PASSWORD="${DB_PASSWORD} \"
+            -e JWT_EXPIRATION="${JWT_EXPIRATION}" \
+            -e SWAGGER_ENABLED="${SWAGGER_ENABLED}" \
+            --restart unless-stopped \
+            "${IMAGE}"
+  
+            echo "Despliegue completado."

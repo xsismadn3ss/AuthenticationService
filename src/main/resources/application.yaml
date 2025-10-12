@@ -3,6 +3,7 @@ server:
     include-message: always
     include-binding-errors: always
     include-stacktrace: always
+  port: ${PORT:8080}
 
 spring:
   web:
@@ -25,11 +26,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 app:
+  prefix: /api/auth
   jwt:
     secret: ${JWT_SECRET_KEY}
     expiration-ms: ${JWT_EXPIRATION}
-  cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS}
 
 logging:
   level:

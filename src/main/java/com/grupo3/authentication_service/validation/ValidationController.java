@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/validation/")
+@RequestMapping("${app.prefix}/validation/")
 public class ValidationController {
     private final ITokenService tokenService;
     private final IUserService userService;

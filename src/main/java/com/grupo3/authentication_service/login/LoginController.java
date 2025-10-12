@@ -32,7 +32,7 @@ public class LoginController {
         this.tokenService = tokenService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("${app.prefix}/login")
     public ResponseEntity<LoginResponseDto> login(
             @Valid @RequestBody LoginUserDto loginUserDto,
             HttpServletResponse response) {
