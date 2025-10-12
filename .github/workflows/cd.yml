@@ -12,7 +12,7 @@ on:
 
 env:
   # --- ghcr ---
-  REGISTRY: ghrc.io
+  REGISTRY: ghcr.io
   IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
   IMAGE_TAG: latest
   REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
