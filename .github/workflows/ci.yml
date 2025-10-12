@@ -16,7 +16,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: colibrihub-auth-service
+  IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
   JAVA_VERSION: 21
 
 jobs:
