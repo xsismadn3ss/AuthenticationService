@@ -54,15 +54,15 @@ jobs:
   
             echo "Levantando contenedor..."
             docker run -d --name "${CONTAINER_NAME}" \
-            -p "${APP_PORT}":"${APP_PORT}" \
-            -e PORT="${APP_PORT}" \
-            -e JWT_SECRET="${JWT_SECRET}" \
-            -e DB_URL="${DB_URL}" \
-            -e DB_USER="${DB_USER}" \
-            -e DB_PASSWORD="${DB_PASSWORD}" \
-            -e JWT_EXPIRATION="${JWT_EXPIRATION}" \
-            -e SWAGGER_ENABLED="${SWAGGER_ENABLED}" \
-            --restart unless-stopped \
-            "${IMAGE}"
+              -p "${APP_PORT}:${APP_PORT}" \
+              -e PORT="${APP_PORT}" \
+              -e JWT_SECRET="${JWT_SECRET}" \
+              -e DB_URL="${DB_URL}" \
+              -e DB_USER="${DB_USER}" \
+              -e DB_PASSWORD="${DB_PASSWORD}" \
+              -e JWT_EXPIRATION="${JWT_EXPIRATION}" \
+              -e SWAGGER_ENABLED="${SWAGGER_ENABLED}" \
+              --restart unless-stopped \
+              "${IMAGE}"
   
             echo "Despliegue completado."
