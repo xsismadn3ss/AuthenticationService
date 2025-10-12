@@ -25,7 +25,7 @@ env:
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
   SWAGGER_ENABLED: ${{ secrets.SWAGGER_ENABLED }}
-  APP_PORT: ${{ secrets.PORT }}
+  APP_PORT: ${{ secrets.APP_PORT }}
 
 jobs:
   deploy:
@@ -38,6 +38,7 @@ jobs:
           host: ${{ secrets.SERRVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          port: '22'
           envs: DB_URL,DB_USER,DB_PASSWORD,JWT_SECRET_KEY,JWT_EXPIRATION,SWAGGER_ENABLED,APP_PORT,REGISTRY,REGISTRY_USERNAME,REGISTRY_TOKEN,CONTAINER_NAME,IMAGE_NAME,IMAGE_TAG
           script: |
             IMAGE="${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
