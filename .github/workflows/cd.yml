@@ -63,7 +63,7 @@ jobs:
               -e DB_PASSWORD="${DB_PASSWORD}" \
               -e JWT_EXPIRATION="${JWT_EXPIRATION}" \
               -e SWAGGER_ENABLED="${SWAGGER_ENABLED}" \
-              -e CORS_ALLOWED_ORIGINS="${CORS_ALLOWED_ORIGINS}"
+              -e CORS_ALLOWED_ORIGINS="${CORS_ALLOWED_ORIGINS}" \
               --restart unless-stopped \
               "${IMAGE}"
   
