@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/authentication")
+@RequestMapping("${app.prefix}/authentication")
 public class LoginController {
     private final IUserService userService;
     private final IEncryptService encryptService;
@@ -32,7 +32,7 @@ public class LoginController {
         this.tokenService = tokenService;
     }
 
-    @PostMapping("${app.prefix}/login")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(
             @Valid @RequestBody LoginUserDto loginUserDto,
             HttpServletResponse response) {
