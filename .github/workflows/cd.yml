@@ -25,7 +25,7 @@ env:
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
   SWAGGER_ENABLED: ${{ secrets.SWAGGER_ENABLED }}
-  APP_PORT: ${{ secrets.APP_PORT }}
+  APP_PORT: ${{ secrets.PORT }}
 
 jobs:
   deploy:
@@ -35,7 +35,7 @@ jobs:
       - name: Desplegar en VPS vía Docker
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.SERRVER_HOST }}
+          host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: '22'
