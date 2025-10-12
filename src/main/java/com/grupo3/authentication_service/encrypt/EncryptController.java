@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("${app.prefix}/encryption")
+@RequestMapping("/encryption")
 public class EncryptController {
 
     private final IEncryptService encryptService;
