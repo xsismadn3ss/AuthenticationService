@@ -69,7 +69,7 @@ jobs:
               -e CORS_ALLOWED_ORIGINS="${CORS_ALLOWED_ORIGINS}" \
               -e SWAGGER_ENABLED="${SWAGGER_ENABLED}" \
               -e DOMAIN="${DOMAIN}" \ 
-              --restart unless-stopped \
+              --restart unless-stopped
               "${IMAGE}"
             
             echo "Eliminando imágenes no utilizadas..."
