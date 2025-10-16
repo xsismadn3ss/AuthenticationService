@@ -4,6 +4,7 @@ server:
     include-binding-errors: always
     include-stacktrace: always
   port: ${PORT:8080}
+  domain: ${DOMAIN}
 
 spring:
   web:

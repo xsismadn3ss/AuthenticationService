@@ -27,6 +27,7 @@ env:
   SWAGGER_ENABLED: ${{ secrets.SWAGGER_ENABLED }}
   APP_PORT: ${{ secrets.PORT }}
   CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+  DOMAIN: ${{ secrets.DOMAIN }}
 
 jobs:
   deploy:
@@ -40,7 +41,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: '22'
-          envs: DB_URL,DB_USER,DB_PASSWORD,JWT_SECRET_KEY,JWT_EXPIRATION,SWAGGER_ENABLED,APP_PORT,REGISTRY,REGISTRY_USERNAME,REGISTRY_TOKEN,CONTAINER_NAME,IMAGE_NAME,IMAGE_TAG,CORS_ALLOWED_ORIGINS,SWAGGER_ENABLED
+          envs: DB_URL,DB_USER,DB_PASSWORD,JWT_SECRET_KEY,JWT_EXPIRATION,SWAGGER_ENABLED,APP_PORT,REGISTRY,REGISTRY_USERNAME,REGISTRY_TOKEN,CONTAINER_NAME,IMAGE_NAME,IMAGE_TAG,CORS_ALLOWED_ORIGINS,SWAGGER_ENABLED,DOMAIN
           script: |
             set -euo pipefail
             
@@ -67,6 +68,7 @@ jobs:
               -e SWAGGER_ENABLED="${SWAGGER_ENABLED}" \
               -e CORS_ALLOWED_ORIGINS="${CORS_ALLOWED_ORIGINS}" \
               -e SWAGGER_ENABLED="${SWAGGER_ENABLED}" \
+              -e DOMAIN="${DOMAIN}" \
               --restart unless-stopped \
               "${IMAGE}"
             
