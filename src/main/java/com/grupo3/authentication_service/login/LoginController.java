@@ -2,7 +2,6 @@ package com.grupo3.authentication_service.login;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import shareddtos.usersmodule.auth.MessageDto;
 import com.grupo3.authentication_service.encrypt.service.IEncryptService;
@@ -20,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 
-@Slf4j
 @RestController
 @RequestMapping("/authentication")
 @RequiredArgsConstructor
