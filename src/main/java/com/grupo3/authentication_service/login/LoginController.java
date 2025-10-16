@@ -2,6 +2,7 @@ package com.grupo3.authentication_service.login;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import shareddtos.usersmodule.auth.MessageDto;
 import com.grupo3.authentication_service.encrypt.service.IEncryptService;
 import com.grupo3.authentication_service.login.dto.LoginResponseDto;
