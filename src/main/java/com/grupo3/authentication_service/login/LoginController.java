@@ -74,6 +74,7 @@ public class LoginController {
         }
 
         Cookie cookie = new Cookie("token", "");
+        cookie.setDomain(domain);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         cookie.setSecure(true);
