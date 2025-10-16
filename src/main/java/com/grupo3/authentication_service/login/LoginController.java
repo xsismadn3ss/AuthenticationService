@@ -1,8 +1,6 @@
 package com.grupo3.authentication_service.login;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import shareddtos.usersmodule.auth.MessageDto;
 import com.grupo3.authentication_service.encrypt.service.IEncryptService;
 import com.grupo3.authentication_service.login.dto.LoginResponseDto;
@@ -21,12 +19,18 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/authentication")
-@RequiredArgsConstructor
 public class LoginController {
     private final IUserService userService;
     private final IEncryptService encryptService;
     private final ITokenService tokenService;
 
+    public LoginController(IUserService userService,
+                           IEncryptService encryptService,
+                           ITokenService tokenService) {
+        this.userService = userService;
+        this.encryptService = encryptService;
+        this.tokenService = tokenService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(
