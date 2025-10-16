@@ -2,7 +2,6 @@ package com.grupo3.authentication_service.login;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import shareddtos.usersmodule.auth.MessageDto;
 import com.grupo3.authentication_service.encrypt.service.IEncryptService;
 import com.grupo3.authentication_service.login.dto.LoginResponseDto;
@@ -23,8 +22,6 @@ import java.util.HashMap;
 @RequestMapping("/authentication")
 @RequiredArgsConstructor
 public class LoginController {
-    @Value("${server.domain}")
-    private String domain;
     private final IUserService userService;
     private final IEncryptService encryptService;
     private final ITokenService tokenService;
@@ -48,7 +45,7 @@ public class LoginController {
         String token = this.tokenService.generateToken(payload, loginUserDto.getUsername());
 
         Cookie cookie = new Cookie("token", token);
-        cookie.setDomain(domain); // añadir dominio a la cookie
+        cookie.setDomain(loginUserDto.getDomain()); // añadir dominio a la cookie
         cookie.setHttpOnly(true);
         cookie.setMaxAge(60 * 60 * 24);
         cookie.setPath("/");
